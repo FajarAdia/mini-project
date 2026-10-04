@@ -54,6 +54,9 @@
                             </span>
                         </td>
                         <td class="px-5 py-4 text-center">
+                            <a href="{{ route('barang.edit', $item->id) }}" class="text-blue-600 hover:text-blue-900 font-semibold mr-3">
+                                Edit
+                            </a>
                             <form action="{{ route('barang.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus barang ini?');" class="inline">
                                 @csrf
                                 @method('DELETE')

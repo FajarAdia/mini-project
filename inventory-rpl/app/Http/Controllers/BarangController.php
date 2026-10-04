@@ -10,7 +10,12 @@ class BarangController extends Controller
 {
     public function dashboard()
     {
-        return view('dashboard');
+        $totalBarang = Barang::count();
+        $barangTersedia = Barang::where('status', 'Tersedia')->count();
+        $barangDipinjam = Barang::where('status', 'Dipinjam')->count();
+        $barangMaintenance = Barang::where('status', 'Maintenance')->count();
+
+        return view('dashboard', compact('totalBarang', 'barangTersedia', 'barangDipinjam', 'barangMaintenance'));
     }
 
     public function index()
@@ -44,11 +49,25 @@ class BarangController extends Controller
 
     public function edit(Barang $barang)
     {
-        return view('barang.edit', compact('barang'));
+        $kategori = Kategori::all();
+        return view('barang.edit', compact('barang', 'kategori'));
     }
 
     public function update(Request $request, Barang $barang)
     {
+        $validated = $request->validate([
+            'kode_barang' => 'required|string|max:20|unique:barangs,kode_barang,' . $barang->id,
+            'nama_barang' => 'required|string|min:3|max:150',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'stok'        => 'required|integer|min:0',
+            'kondisi'     => 'required|in:Baik,Rusak Ringan,Rusak Berat',
+            'status'      => 'required|in:Tersedia,Dipinjam,Maintenance',
+            'spesifikasi' => 'nullable|string',
+        ]);
+
+        $barang->update($validated);
+
+        return redirect()->route('barang.index')->with('success', 'Data barang berhasil diperbarui!');
     }
 
     public function destroy(Barang $barang)
