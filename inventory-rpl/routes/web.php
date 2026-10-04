@@ -1,14 +1,20 @@
 <?php
 
-use App\Http\Controllers\BarangController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BarangController;
 
-// Redirect halaman utama ke daftar barang
+Route::get('/tes', function () {
+    return 'Web Laravel Berjalan Normal!';
+});
+
 Route::get('/', function () {
     return redirect()->route('barang.index');
 });
 
-// Route sesuai spesifikasi Lembar Kerja (Point IV)
+Route::get('/dashboard', [BarangController::class, 'index'])->name('dashboard');
+
+// Route CRUD barang
+Route::resource('barang', BarangController::class);
 Route::get('/dashboard', [BarangController::class, 'dashboard'])->name('dashboard');
 Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
 Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.create');
